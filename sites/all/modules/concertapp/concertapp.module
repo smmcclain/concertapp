@@ -1,0 +1,68 @@
+<?php
+/**
+ * @file concertapp.module
+ *
+ * This module does stuff and whatnot
+ */
+
+/**
+ * Implements hook_block_info()
+ */
+function concertapp_block_info()
+{
+  $blocks = array();
+
+  $blocks["list_modules"] = array (
+
+    /* describes what this block does */
+    "info" => t("A listing of all of the enabled modules."),
+
+    /* tells Drupal how to cache the data from this block
+       DRUPAL_NO_CACHE : forgo caching altogether
+     */
+    "cache" => DRUPAL_NO_CACHE
+
+    );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view()
+ *
+ * @param block_name string name of the block to retrieve
+ * @return retrieved block
+ */
+function concertapp_block_view($block_name = '')
+{
+  $block = array();
+  $theme_args = array();
+
+  switch($block_name)
+  {
+    case "list_modules" :
+      $theme_args["items"] = module_list();
+      $theme_args["type"] = "ol";
+      $block["subject"] = t("Enabled Modules");
+      $block["content"] = theme("item_list", $theme_args);
+    default :
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Implements hook_help()
+ *
+ * @param string path the help system URI path
+ * @param arg array the arguments used when accessing this URL
+ * @return a "hello world" string
+ */
+function concertapp_help($path, $arg)
+{
+  if ($path == "admin/help#concertapp")
+  {
+    return t("A demonstration module");
+  }
+}

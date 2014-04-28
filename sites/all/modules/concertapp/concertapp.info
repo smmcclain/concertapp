@@ -1,0 +1,7 @@
+name = "ConcertApp ReST"
+description = "A database ReST server for an android app"
+package = Concertapp
+core = 7.x
+files[] = concertapp.module
+files[] = concertapp.test
+php = 5.2.9
