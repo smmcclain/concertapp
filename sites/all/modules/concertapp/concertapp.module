@@ -5,6 +5,204 @@
  * This module does stuff and whatnot
  */
 
+/* Form API parameters */
+define("CONCERTAPP_NODE_TYPE", "ARTICLE");
+define("CONCERTAPP_LIST_COUNT", 3);
+define("CONCERTAPP_DATE_FORMAT", "F d, Y");
+
+/**
+ * Implements hook_block_view()
+ *
+ * @param block_name string name of the requested block
+ * @return retrieved block
+ */
+function concertapp_block_view($block_name = '')
+{
+  $block = array();
+  $items = array();
+  $subject = "Title";
+  $type = "div";
+  static $key = 0;
+
+  /* prepare block specific contents */
+  switch($block_name)
+  {
+    /* module list block */
+    case "list_modules" :
+
+      /* content */
+      $items = module_list();
+
+      /* title */
+      $subject = t("Enabled Modules");
+
+      /* e.g. (un)ordered list, div */
+      $type = "ol";
+      break;
+
+    /* recent posts block */
+    case "recent" :
+
+      /* if this user has the 'access content' permission,
+         grab all recent posts */
+      if (user_access("access content"))
+      {
+        foreach (concertapp_list(CONCERTAPP_LIST_COUNT) as $node)
+        {
+          $items[sprintf("listnode%d", $key++)] = array (
+
+              /* URL alias agnostic link to node/[node id] */
+              "data"  => array (
+                  "#theme" => "concertapp_block_item",
+                  "#node"  => $node,
+                  ),
+
+              /* attribute for the wrapping <li> element */
+              "class" => array(sprintf("node-%d", $node->nid)),
+
+              );
+        }
+      }
+
+      $subject = t("Recent blog posts");
+      break;
+
+    default :
+      break;
+  }
+
+  /* theme the list of blog entries */
+  $block["content"]["list"] = array (
+      "#theme"      => "item_list__concertapp",
+      "#items"      => $items,
+      "#pre_render" => array("concertapp_item_list_child_render"),
+      );
+
+  /* add a link to the full list of blog entries */
+  $block["content"]["more"] = array (
+      "#theme"      => "more_link",
+      "#url"        => "blog",
+      "#title"      => t("Read the latest blog entries"),
+      );
+
+  /* add a CSS file to style the block */
+  $block["content"]["#attached"]["css"] []=
+    sprintf("%s/concertapp.css", drupal_get_path("module", "concertapp"));
+
+  /* add javascript to our block */
+  $block["content"]["#attached"]["js"] []=
+    sprintf("%s/concertapp.js", drupal_get_path("module", "concertapp"));
+
+  /* add this block's title */
+  $block["subject"] = $subject;
+
+  return $block;
+}
+
+/**
+ * Returns a list of blog entries
+ *
+ * @param number integer The number of blog entries to return
+ * @return A result set object containing the list of blog entries
+ * @see http://drupal.org/node/310069
+ */
+function concertapp_list($number = CONCERTAPP_LIST_COUNT)
+{
+  $query = db_select("node", "n")
+    ->fields("n", array("nid", "title", "created", "uid"))
+    ->condition("type", CONCERTAPP_NODE_TYPE)
+    ->condition("status", 1)
+    ->orderBy("created", "DESC")
+    ->range(0, $number)
+    ->addTag("node_access")
+    ->execute();
+
+  return $query;
+}
+
+/**
+ * Render the child elements of theme_item_list() before its
+ * data is themed
+ *
+ * @param elements array contains each of the child elements
+ * @return modified elements array
+ */
+function concertapp_item_list_child_render($elements)
+{
+  /* Take the renderable array that we set in concertapp_block_view()
+     and render it into the string that theme_item_list() expects
+     for each child */
+  foreach($elements["#items"] as $key => $val)
+  {
+    if (
+           1
+        && ( strpos($key, "listnode") === 0 )
+        && ( ! empty($val["data"]) )
+        && ( ! empty($val["data"]["#node"]) )
+        && ( ! empty($val["data"]["#theme"]) )
+        )
+    {
+      $val["data"] = drupal_render($val["data"]);
+      $elements["#items"][$key] = $val;
+    }
+  }
+
+  return $elements;
+}
+
+/**
+ * Implements hook_theme()
+ *
+ * @param existing something description
+ * @param type something description
+ * @param theme something description
+ * @param path something description
+ * @return
+ */
+function concertapp_theme($existing, $type, $theme, $path)
+{
+  return array (
+      "concertapp_block_item" => array (
+          "variables" => array (
+              "node" => NULL,
+              ),
+          "template" => "concertapp-block-item",
+          ),
+      );
+}
+
+/**
+ * Preprocess concertapp block item variables
+ *
+ * @param variables array description
+ */
+function template_preprocess_concertapp_block_item(&$variables)
+{
+  echo "<br/>called preprocess function<br/>\n";
+  $node = $variables["node"];
+
+  /* Create a renderable array for the title */
+  $variables["title"] = array (
+      "#type"  => "link",
+      "#title" => $node->title,
+      "#href"  => sprintf("node/%d", $node->nid),
+      );
+
+  /* Format the creation date of the node */
+  $variables["created"] = $node->created;
+  $variables["date"] = format_date (
+      $node->created, "custom", CONCERTAPP_DATE_FORMAT
+      );
+
+  /* Load the account object with the node's creator
+     and store in a variable for themer's convenience */
+  $variables["user"] = user_load($node->uid);
+
+  /* Theme the username */
+  $variables["name"] =
+    theme("username", array("account" => $variables["user"]));
+}
+
 /**
  * Implements hook_block_info()
  */
@@ -12,44 +210,26 @@ function concertapp_block_info()
 {
   $blocks = array();
 
+  /* listing of all available modules block */
   $blocks["list_modules"] = array (
 
-    /* describes what this block does */
-    "info" => t("A listing of all of the enabled modules."),
+      /* the name of the block on the blocks administration page */
+      "info" => t("A listing of all of the enabled modules."),
 
-    /* tells Drupal how to cache the data from this block
-       DRUPAL_NO_CACHE : forgo caching altogether
-     */
-    "cache" => DRUPAL_NO_CACHE
+      /* tells Drupal how to cache the data from this block
+         DRUPAL_NO_CACHE : forgo caching altogether
+       */
+      "cache" => DRUPAL_NO_CACHE,
 
-    );
+      );
+
+  /* recent blog posts block */
+  $blocks["recent"] = array (
+      "info" => t("Recent blog posts"),
+      "cache" => DRUPAL_NO_CACHE,
+      );
 
   return $blocks;
-}
-
-/**
- * Implements hook_block_view()
- *
- * @param block_name string name of the block to retrieve
- * @return retrieved block
- */
-function concertapp_block_view($block_name = '')
-{
-  $block = array();
-  $theme_args = array();
-
-  switch($block_name)
-  {
-    case "list_modules" :
-      $theme_args["items"] = module_list();
-      $theme_args["type"] = "ol";
-      $block["subject"] = t("Enabled Modules");
-      $block["content"] = theme("item_list", $theme_args);
-    default :
-      break;
-  }
-
-  return $block;
 }
 
 /**

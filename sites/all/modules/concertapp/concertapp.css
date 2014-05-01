@@ -1,0 +1,26 @@
+.block-concertapp .content ul
+{
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.block-concertapp .content ul li
+{
+  margin-bottom: 10px;
+  list-style-type: none;
+}
+
+.block-concertapp .date
+{
+  font-weight: bold;
+}
+
+.block-concertapp h4
+{
+  margin: 0;
+}
+
+.block-concertapp .name
+{
+  font-style: italic;
+}

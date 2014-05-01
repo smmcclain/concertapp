@@ -2,6 +2,16 @@ name = "ConcertApp ReST"
 description = "A database ReST server for an android app"
 package = Concertapp
 core = 7.x
-files[] = concertapp.module
 files[] = concertapp.test
-php = 5.2.9
+files[] = concertapp.module
+configure = admin/config/development/testing/settings
+dependencies[] = simpletest_monitor
+
+testing_api = 2.x
+
+; Information added by drupal.org packaging script on 2011-03-15
+version = "7.x-2.0"
+core = "7.x"
+project = "concertapp"
+datestamp = "1300166168"
+
