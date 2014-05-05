@@ -1,0 +1,37 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/footer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+    
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/news"></TextView>
+
+<ImageView 
+    android:layout_width="150dp"
+    android:layout_height="120dp"
+	android:layout_alignParentRight="true"
+	android:layout_alignParentBottom="true"   
+	android:contentDescription="@string/image"
+	android:id="@+id/newspix" />
+
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:contentDescription="@string/image"
+    android:id="@+id/pix"
+    android:layout_alignParentBottom="true"
+    ></ImageView>
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/nav"
+    android:layout_alignParentBottom="true"
+    >
+</RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,21 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/spinnerItem"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+<!--     android:orientation="horizontal" -->
+
+      <ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/pix"  
+    android:contentDescription="@string/image"
+      ></ImageView>
+      
+      <TextView 
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+          />
+</RelativeLayout>

@@ -1,0 +1,33 @@
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="210dp"
+         xmlns:android="http://schemas.android.com/apk/res/android"  
+     android:id="@+id/trackitem" 
+     >
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/name"  
+      ></TextView>
+    
+
+    <SeekBar
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/seek"  
+    android:layout_below="@id/name"
+      ></SeekBar>
+ 
+    
+      <ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/tpix"  
+    android:contentDescription="@string/image"
+    android:layout_alignParentRight="true"
+      ></ImageView>
+    
+  
+  
+</RelativeLayout>
