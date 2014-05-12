@@ -1,1 +1,8 @@
-Hi there
+To load this project properly:
+
+- Make sure your top level directory is the git root
+- Make sure the project name is "android"
+- File -> import, Android -> Existing android code into workspace
+- Check the "copy files into workspace" checkbox
+
+That's it :)

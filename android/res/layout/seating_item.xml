@@ -1,0 +1,28 @@
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:id="@+id/seatitem" 
+     >
+       
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:typeface="sans"
+        android:layout_alignParentLeft="true" />
+    
+   <TextView
+        android:id="@+id/seatprice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:typeface="sans"
+        android:layout_alignParentRight="true"
+	 />
+  
+  
+</RelativeLayout>
