@@ -237,12 +237,46 @@ function concertapp_block_info()
  *
  * @param string path the help system URI path
  * @param arg array the arguments used when accessing this URL
- * @return a "hello world" string
+ * @return an info string explaining what this module does
  */
 function concertapp_help($path, $arg)
 {
   if ($path == "admin/help#concertapp")
   {
-    return t("A demonstration module");
+    return t("MyKe server implementation");
+  }
+}
+
+/**
+ * Implement hook_menu()
+ **/
+function concertapp_menu()
+{
+  $items = array();
+
+  $items["user/concertapp/test_json"] = array (
+      "title"            => "Test JSON",
+      "description"      => "Test JSON functionality",
+      "page callback"    => "concertapp_test_json",
+      "page arguments"   => array("concertapp_form"),
+      "access arguments" => array("administer users"),
+      "type"             => MENU_NORMAL_ITEM,
+      );
+
+    return $items;
+}
+
+/**
+ * Callback for test_json
+ */
+function concertapp_test_json($arg1)
+{
+  $result = db_query("SELECT bid, delta FROM block");
+
+
+
+  while ($row = $result->fetchAssoc())
+  {
+    print_r(drupal_json_encode($row));
   }
 }
