@@ -1,5 +1,7 @@
 package com.escapegoatdata.myke;
 
+import com.escapegoatdata.myke.Listeners.URLGrabberHandler;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +16,14 @@ import android.widget.ScrollView;
 public class MainActivity extends Activity {
 
 	Tools t = new Tools();
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Listeners.setContext(this);
+		URLGrabber.setMainHandler(new URLGrabberHandler());
+        new Thread(new URLGrabber()).start();
+	}
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {

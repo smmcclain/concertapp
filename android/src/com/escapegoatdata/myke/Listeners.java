@@ -1,10 +1,46 @@
 package com.escapegoatdata.myke;
 
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.escapegoatdata.myke.JSONObjects.Realtor;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
+import android.widget.Toast;
 
+/**
+ * Contains methods for switching between Activities
+ * 
+ * @author Daniel Ziskin <info at escapegoatdata.com>
+ * @author Sean McClain <sean.mcclain.dc3.sw at gmail.com>
+ */
 public class Listeners {
 
+    /** Stores a calling Activity (usually the MainActivity) */
+    private static Activity context = null;
+    public static Activity getContext() {
+        return context;
+    }
+    public static void setContext(Activity newContext) {
+        context = newContext;
+    }
+
+	/**
+	 * Retrieves a configured Intent which allows a user to switch Activities
+	 * from the MainActivity to a button selected Activity. For example,
+	 * pushing the "show" button from the main screen will set up the Intent
+	 * for loading the Show Activity.
+	 *
+	 * @see http://developer.android.com/reference/android/content/Intent.html
+	 * @param ctx main screen's context
+	 * @param choice button selection
+	 * @return configured Intent
+	 */
 	static Intent getClickIntent(Context ctx, Integer choice) {
 		Intent i = 	new Intent(ctx,MainActivity.class);
 		
@@ -62,5 +98,35 @@ public class Listeners {
 		
 		return i;
 	}
-	
+
+    /**
+     * Handles data retrieved by URLGrabber.
+     *
+     * Consider this the main entry point to the program.
+     */
+    public static class URLGrabberHandler extends Handler {
+
+        /**
+         * "Main" method
+         */
+        public void handleMessage(Message msg)
+        {
+            JSONObject root;
+            JSONArray json_realtors;
+            int i;
+            Realtor newRealtor = new Realtor();
+
+            /* load retrieved Realtor data into a list */
+            try {
+                root = new JSONObject((String) msg.obj);
+                json_realtors = (JSONArray) root.getJSONArray("realtors");
+                for (i = 0; i < json_realtors.length(); i++) {
+                    newRealtor.setData(json_realtors.getJSONObject(i));
+                    Toast.makeText(context, newRealtor.toString(), 1).show();
+                }
+            } catch (Exception e) {
+                return;
+            }
+        }
+    }
 }
